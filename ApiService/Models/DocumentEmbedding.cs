@@ -10,6 +10,9 @@ public class DocumentEmbedding
     [VectorStoreRecordData]
     public string Sha { get; set; } = string.Empty;
 
+    [VectorStoreRecordData]
+    public string Content { get; set; } = string.Empty;
+
     [VectorStoreRecordVector(768)]
     public ReadOnlyMemory<float>? DescriptionEmbedding { get; set; }
 

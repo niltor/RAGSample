@@ -50,14 +50,12 @@ public class Worker(
             var hash = MD5.HashData(Encoding.UTF8.GetBytes(mdFile));
             var md5 = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-
-            // search from qdrant by fileName payload
-
             ReadOnlyMemory<float> zeroVector = new float[768];
 
             var searchResult = await collection.VectorizedSearchAsync(zeroVector, new VectorSearchOptions<DocumentEmbedding>
             {
                 Filter = d => d.Sha == md5,
+                Top = 1
             });
             if (await searchResult.Results.AnyAsync())
             {
@@ -69,13 +67,14 @@ public class Worker(
 
             _logger.LogInformation("saving to db");
             List<DocumentEmbedding> sentencesEmbeddings = new();
-            foreach (var embedding in embeddings)
+            for (int i = 0; i < embeddings.Count; i++)
             {
                 sentencesEmbeddings.Add(new DocumentEmbedding
                 {
                     Id = id++,
                     Sha = md5,
-                    DescriptionEmbedding = embedding
+                    Content = sentences[i],
+                    DescriptionEmbedding = embeddings[i]
                 });
             }
             try

@@ -20,8 +20,8 @@ public class InternalDocumentsPlugin
         _logger = logger;
     }
 
-    [KernelFunction("检索")]
-    [Description("检索文档")]
+    [KernelFunction("Search")]
+    [Description("Search document")]
     public async Task<string> SearchAsync(string query)
     {
         ReadOnlyMemory<float> searchEmbedding = await _embed.GenerateEmbeddingAsync(query);

@@ -22,10 +22,16 @@ builder.Services
     .AddOllamaTextEmbeddingGeneration("nomic-embed-text", new Uri("http://localhost:49394"))
     .AddQdrantVectorStore("localhost", 49383, apiKey: "U3gr80UJhy880CkFnxfh1f");
 
+builder.Services.AddScoped<InternalDocumentsPlugin>();
+
+
 builder.Services.AddTransient((serviceProvider) =>
 {
-    var kernel = new Kernel(serviceProvider);
-    kernel.Plugins.AddFromType<InternalDocumentsPlugin>("Search");
+    var kernelBuilder = Kernel.CreateBuilder();
+    var searchPlugin = serviceProvider.GetRequiredService<InternalDocumentsPlugin>();
+    var kernel = kernelBuilder.Build();
+
+    kernel.ImportPluginFromObject(searchPlugin, "Search");
     return kernel;
 });
 
@@ -41,12 +47,16 @@ app.Run();
 
 
 #pragma warning disable SKEXP0001
-static async Task<string> SearchAsync(
-    HttpContext context,
+static async Task SearchAsync(
+    HttpContext httpContext,
     QuestionModel question,
-    IChatCompletionService chat
+    IChatCompletionService chat,
+    Kernel kernel
     )
 {
+
+    httpContext.Response.ContentType = "text/plain;charset=utf-8";
+
     string systemPrompt = @"
 你是一个通过检索回答问题的助手。
 使用简单的markdown格式来回复内容。
@@ -62,13 +72,19 @@ quote最大6个字符，从搜索结果中按顺序获取。
 ";
 
     ChatHistory history = [];
-    history.AddUserMessage(question.Content);
+    history.AddUserMessage($"query: {question.Content}");
 
-    var response = chat.GetStreamingChatMessageContentsAsync(history, new PromptExecutionSettings
+    var response = await chat.GetChatMessageContentsAsync(history, new PromptExecutionSettings
     {
         FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(),
-    });
+    }, kernel);
 
+    foreach (var item in response)
+    {
+        Console.WriteLine("111");
+        Console.WriteLine(item.Content);
+        await httpContext.Response.WriteAsync(item.Content ?? "");
+    }
 
-    return "Hello World!";
+    await httpContext.Response.CompleteAsync();
 }

@@ -7,5 +7,5 @@ POST {{ApiService_HostAddress}}/search
 Accept: application/json
 Content-Type: application/json
 {
-    "question": "Ater.dry是什么?"
+    "Content": "Ater.dry是什么?"
 }

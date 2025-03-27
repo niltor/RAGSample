@@ -1,14 +1,9 @@
-﻿
-using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using ApiService.Models;
 using Markdig;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel.Embeddings;
-using Microsoft.SemanticKernel.Text;
-using Qdrant.Client;
 
 namespace ApiService;
 /// <summary>
@@ -22,7 +17,7 @@ public class Worker(
     ) : IHostedService
 #pragma warning restore SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 {
-    private const string SearchPath = @"D:\codes\MyBlog\Content";
+    private const string SearchPath = @"E:\codes\EasyBlog\Content";
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -46,7 +41,7 @@ public class Worker(
             var sentenceSplitter = new char[] { '.', '!', '?', '。', '！', '？', '\n' };
             var sentences = plainText.Split(sentenceSplitter, StringSplitOptions.RemoveEmptyEntries);
             sentences = sentences.ToList().Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-            
+
             var hash = MD5.HashData(Encoding.UTF8.GetBytes(mdFile));
             var md5 = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
@@ -59,14 +54,14 @@ public class Worker(
             });
             if (await searchResult.Results.AnyAsync())
             {
-                _logger.LogInformation("skip...{name}", mdFiles);
+                _logger.LogInformation("skip...{name}", mdFile);
                 return;
             }
-            _logger.LogInformation("embedding...{name}", mdFiles);
+            _logger.LogInformation("embedding...{name}", mdFile);
             var embeddings = await _embed.GenerateEmbeddingsAsync(sentences);
 
             _logger.LogInformation("saving to db");
-            List<DocumentEmbedding> sentencesEmbeddings = new();
+            List<DocumentEmbedding> sentencesEmbeddings = [];
             for (int i = 0; i < embeddings.Count; i++)
             {
                 sentencesEmbeddings.Add(new DocumentEmbedding

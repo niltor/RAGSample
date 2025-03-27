@@ -1,13 +1,14 @@
-using ApiService;
+ï»¿using ApiService;
 using ApiService.Models;
 using ApiService.Plugins;
-using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Embeddings;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+string qdrantKey = "TNQ1X75CZWrMx9ehseu2q0";
 
 builder.Services.AddLogging(op =>
 {
@@ -18,12 +19,11 @@ builder.Services.AddLogging(op =>
 
 #pragma warning disable SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 builder.Services
-    .AddOllamaChatCompletion("llama3.2:1b", new Uri("http://localhost:49394"))
+    .AddOllamaChatCompletion("phi4", new Uri("http://localhost:49394"))
     .AddOllamaTextEmbeddingGeneration("nomic-embed-text", new Uri("http://localhost:49394"))
-    .AddQdrantVectorStore("localhost", 49383, apiKey: "U3gr80UJhy880CkFnxfh1f");
+    .AddQdrantVectorStore("localhost", 49383, apiKey: qdrantKey);
 
 builder.Services.AddScoped<InternalDocumentsPlugin>();
-
 
 builder.Services.AddTransient((serviceProvider) =>
 {
@@ -35,7 +35,7 @@ builder.Services.AddTransient((serviceProvider) =>
     return kernel;
 });
 
-//builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
 
@@ -51,37 +51,40 @@ static async Task SearchAsync(
     HttpContext httpContext,
     QuestionModel question,
     IChatCompletionService chat,
-    Kernel kernel
+    InternalDocumentsPlugin plugin
     )
 {
 
     httpContext.Response.ContentType = "text/plain;charset=utf-8";
 
     string systemPrompt = @"
-ÄãÊÇÒ»¸öÍ¨¹ı¼ìË÷»Ø´ğÎÊÌâµÄÖúÊÖ¡£
-Ê¹ÓÃ¼òµ¥µÄmarkdown¸ñÊ½À´»Ø¸´ÄÚÈİ¡£
+ä½ æ˜¯ä¸€ä¸ªé€šè¿‡æ£€ç´¢å›ç­”é—®é¢˜çš„åŠ©æ‰‹ã€‚
+ä½¿ç”¨ç®€å•çš„markdownæ ¼å¼æ¥å›å¤å†…å®¹ã€‚
 
-Ê¹ÓÃ¼ìË÷¹¤¾ßºÍ²éÕÒµÄÏà¹ØĞÅÏ¢Ê±£¬ĞèÒªÔÚ·µ»Ø½á¹ûµÄ×îºóÌí¼Ó:
+ä½¿ç”¨æ£€ç´¢å·¥å…·å’ŒæŸ¥æ‰¾çš„ç›¸å…³ä¿¡æ¯æ—¶ï¼Œéœ€è¦åœ¨è¿”å›ç»“æœçš„æœ€åæ·»åŠ :
 
  <citation filename='string' page_number='number'>exact quote here</citation>
 
-quote×î´ó6¸ö×Ö·û£¬´ÓËÑË÷½á¹ûÖĞ°´Ë³Ğò»ñÈ¡¡£
+quoteæœ€å¤§6ä¸ªå­—ç¬¦ï¼Œä»æœç´¢ç»“æœä¸­æŒ‰é¡ºåºè·å–ã€‚
 
-²»ÒªÌá¼°ÒıÓÃµÄ´æÔÚ£»Ö»ĞèÔÚÄ©Î²·¢³öÕâĞ©±êÇ©£¬ÖÜÎ§Ã»ÓĞÎÄ×Ö¡£
+ä¸è¦æåŠå¼•ç”¨çš„å­˜åœ¨ï¼›åªéœ€åœ¨æœ«å°¾å‘å‡ºè¿™äº›æ ‡ç­¾ï¼Œå‘¨å›´æ²¡æœ‰æ–‡å­—ã€‚
 
 ";
 
     ChatHistory history = [];
     history.AddUserMessage($"query: {question.Content}");
+    history.AddSystemMessage(systemPrompt);
 
-    var response = await chat.GetChatMessageContentsAsync(history, new PromptExecutionSettings
-    {
-        FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(),
-    }, kernel);
+    var searchResult = await plugin.SearchAsync(question.Content);
+
+    Console.WriteLine($"ğŸ¤Ÿ {searchResult}");
+
+    history.AddAssistantMessage($"search result: {systemPrompt}");
+
+    var response = await chat.GetChatMessageContentsAsync(history);
 
     foreach (var item in response)
     {
-        Console.WriteLine("111");
         Console.WriteLine(item.Content);
         await httpContext.Response.WriteAsync(item.Content ?? "");
     }

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using ApiService.Models;
-using Markdig;
+using ApiService.PredictionPrcessing;
 using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel.Embeddings;
 
@@ -36,11 +36,7 @@ public class Worker(
         await Parallel.ForEachAsync(mdFiles, parallelOptions, async (mdFile, ct) =>
         {
             var mdContent = File.ReadAllText(mdFile);
-            var plainText = Markdown.ToPlainText(mdContent);
-            // split plain text into sentences
-            var sentenceSplitter = new char[] { '.', '!', '?', '。', '！', '？', '\n' };
-            var sentences = plainText.Split(sentenceSplitter, StringSplitOptions.RemoveEmptyEntries);
-            sentences = sentences.ToList().Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+            var paragraph = MarkdownProcessing.SplitText(mdContent);
 
             var hash = MD5.HashData(Encoding.UTF8.GetBytes(mdFile));
             var md5 = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
@@ -58,7 +54,7 @@ public class Worker(
                 return;
             }
             _logger.LogInformation("embedding...{name}", mdFile);
-            var embeddings = await _embed.GenerateEmbeddingsAsync(sentences);
+            var embeddings = await _embed.GenerateEmbeddingsAsync(paragraph);
 
             _logger.LogInformation("saving to db");
             List<DocumentEmbedding> sentencesEmbeddings = [];
@@ -68,15 +64,15 @@ public class Worker(
                 {
                     Id = id++,
                     Sha = md5,
-                    Content = sentences[i],
+                    Content = paragraph[i],
                     DescriptionEmbedding = embeddings[i]
                 });
             }
             try
             {
-                var res = collection.UpsertBatchAsync(sentencesEmbeddings);
-                await foreach (var item in res)
+                if (sentencesEmbeddings.Count > 0)
                 {
+                    _ = collection.UpsertBatchAsync(sentencesEmbeddings);
                 }
             }
             catch (Exception ex)

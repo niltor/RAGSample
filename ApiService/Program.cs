@@ -19,7 +19,7 @@ builder.Services.AddLogging(op =>
 
 #pragma warning disable SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 builder.Services
-    .AddOllamaChatCompletion("phi4", new Uri("http://localhost:49394"))
+    .AddOllamaChatCompletion("phi4-mini", new Uri("http://localhost:49394"))
     .AddOllamaTextEmbeddingGeneration("nomic-embed-text", new Uri("http://localhost:49394"))
     .AddQdrantVectorStore("localhost", 49383, apiKey: qdrantKey);
 

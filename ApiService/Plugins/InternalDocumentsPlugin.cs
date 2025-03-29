@@ -25,22 +25,20 @@ public class InternalDocumentsPlugin
     public async Task<string> SearchAsync(string query)
     {
         ReadOnlyMemory<float> searchEmbedding = await _embed.GenerateEmbeddingAsync(query);
-        var collection = _vectorStore.GetCollection<ulong, DocumentEmbedding>("docs");
-
+        var collection = _vectorStore.GetCollection<ulong, DocumentEmbedding>(DocumentEmbedding.DocName);
 
         var searchResult = await collection.VectorizedSearchAsync(searchEmbedding, new VectorSearchOptions<DocumentEmbedding>
         {
-            Top = 10
+            Top = 2
         });
 
+        string res = string.Empty;
         await foreach (var item in searchResult.Results)
         {
-            _logger.LogInformation("search result: {item}", item.Record.Content);
-
+            res += item.Record.Content + Environment.NewLine;
         }
 
-        var firstResult = await searchResult.Results.FirstOrDefaultAsync();
-
-        return firstResult?.Record.Content ?? string.Empty;
+        _logger.LogInformation("Search result: {res}", res);
+        return res;
     }
 }

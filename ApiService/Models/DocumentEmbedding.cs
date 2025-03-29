@@ -4,6 +4,9 @@ namespace ApiService.Models;
 
 public class DocumentEmbedding
 {
+    public static string DocName = "docs1";
+
+
     [VectorStoreRecordKey]
     public ulong Id { get; set; }
 

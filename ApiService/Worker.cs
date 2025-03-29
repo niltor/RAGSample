@@ -21,7 +21,7 @@ public class Worker(
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var collection = _vectorStore.GetCollection<ulong, DocumentEmbedding>("docs");
+        var collection = _vectorStore.GetCollection<ulong, DocumentEmbedding>(DocumentEmbedding.DocName);
 
         await collection.CreateCollectionIfNotExistsAsync();
 
@@ -50,13 +50,12 @@ public class Worker(
             });
             if (await searchResult.Results.AnyAsync())
             {
-                _logger.LogInformation("skip...{name}", mdFile);
+                _logger.LogInformation("➡️ skip...{name}", mdFile);
                 return;
             }
-            _logger.LogInformation("embedding...{name}", mdFile);
+            _logger.LogInformation("🆕 embedding...{name}", mdFile);
             var embeddings = await _embed.GenerateEmbeddingsAsync(paragraph);
 
-            _logger.LogInformation("saving to db");
             List<DocumentEmbedding> sentencesEmbeddings = [];
             for (int i = 0; i < embeddings.Count; i++)
             {
@@ -72,7 +71,11 @@ public class Worker(
             {
                 if (sentencesEmbeddings.Count > 0)
                 {
-                    _ = collection.UpsertBatchAsync(sentencesEmbeddings);
+                    var embedRes = collection.UpsertBatchAsync(sentencesEmbeddings);
+                    await foreach (var item in embedRes)
+                    {
+                    }
+
                 }
             }
             catch (Exception ex)

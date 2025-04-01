@@ -9,8 +9,8 @@ var ollama = builder.AddOllama("ollama", port: 49394)
 var chat = ollama.AddModel("chat", "phi4-mini");
 var embed = ollama.AddModel("embed", "nomic-embed-text");
 
-var qdrant = builder.AddQdrant("qdrant", httpPort: 49384, grpcPort: 49383).WithDataVolume();
-
+var qdrant = builder.AddQdrant("qdrant", httpPort: 49384, grpcPort: 49383)
+    .WithDataVolume();
 
 builder.AddProject<Projects.ApiService>("apiservice")
     .WithReference(chat)

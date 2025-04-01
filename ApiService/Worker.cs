@@ -17,7 +17,8 @@ public class Worker(
     ) : IHostedService
 #pragma warning restore SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 {
-    private const string SearchPath = @"E:\codes\EasyBlog\Content";
+    //private const string SearchPath = @"E:\codes\EasyBlog\Content";
+    private const string SearchPath = @"D:\codes\MyBlog\Content";
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -36,7 +37,7 @@ public class Worker(
         await Parallel.ForEachAsync(mdFiles, parallelOptions, async (mdFile, ct) =>
         {
             var mdContent = File.ReadAllText(mdFile);
-            var paragraph = MarkdownProcessing.SplitText(mdContent);
+            var paragraph = MarkdownProcessing.ToPlainText(mdContent);
 
             var hash = MD5.HashData(Encoding.UTF8.GetBytes(mdFile));
             var md5 = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();

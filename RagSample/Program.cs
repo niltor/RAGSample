@@ -11,7 +11,6 @@ var embed = ollama.AddModel("embed", "nomic-embed-text");
 
 var qdrant = builder.AddQdrant("qdrant", httpPort: 49384, grpcPort: 49383).WithDataVolume();
 
-
 builder.AddProject<Projects.ApiService>("apiservice")
     .WithReference(chat)
     .WithReference(embed)

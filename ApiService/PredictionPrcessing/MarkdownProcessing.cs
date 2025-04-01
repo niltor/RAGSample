@@ -18,4 +18,11 @@ public class MarkdownProcessing
         var paragraphs = content.Split("\n## ", StringSplitOptions.RemoveEmptyEntries).ToList();
         return paragraphs.Select(s => Markdown.ToPlainText(s)).ToList();
     }
+
+
+    public static List<string> ToPlainText(string content)
+    {
+        var res = Markdown.ToPlainText(content);
+        return [res];
+    }
 }

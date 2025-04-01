@@ -8,7 +8,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 var builder = WebApplication.CreateBuilder(args);
 
 
-string qdrantKey = "TNQ1X75CZWrMx9ehseu2q0";
+string qdrantKey = "U3gr80UJhy880CkFnxfh1f";
 
 builder.Services.AddLogging(op =>
 {

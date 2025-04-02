@@ -5,5 +5,5 @@ POST {{ApiService_HostAddress}}/search
 Accept: application/json
 Content-Type: application/json
 {
-    "Content": "Ater.dry是什么"
+    "Content": "创建一个ASP.NET Core API项目"
 }

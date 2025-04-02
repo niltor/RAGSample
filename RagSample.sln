@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RagSample", "RagSample\RagS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiService", "ApiService\ApiService.csproj", "{BB6E670A-3D3D-430E-4DD4-25AD2C7D9C26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONNX", "ONNX\ONNX.csproj", "{7C6006BE-7D64-4297-B4AA-97880E690882}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Python", "Python\Python.pyproj", "{602ED8B3-904B-48B4-AA94-47CD532BAAD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +24,12 @@ Global
 		{BB6E670A-3D3D-430E-4DD4-25AD2C7D9C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB6E670A-3D3D-430E-4DD4-25AD2C7D9C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB6E670A-3D3D-430E-4DD4-25AD2C7D9C26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C6006BE-7D64-4297-B4AA-97880E690882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C6006BE-7D64-4297-B4AA-97880E690882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C6006BE-7D64-4297-B4AA-97880E690882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C6006BE-7D64-4297-B4AA-97880E690882}.Release|Any CPU.Build.0 = Release|Any CPU
+		{602ED8B3-904B-48B4-AA94-47CD532BAAD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{602ED8B3-904B-48B4-AA94-47CD532BAAD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -62,7 +62,8 @@ public class BertProcess
                 {
                     var outputData = output.First().GetTensorDataAsSpan<float>();
                     var predictLabels = outputData.GetMaxValueIndexForChunks(LabelsCount);
-                    return  EntityProcess(predictLabels, tokenizer, tokens);
+
+                    return EntityProcess(predictLabels, tokenizer, tokens);
 
                 }
             }
@@ -80,6 +81,9 @@ public class BertProcess
         var predictedLabels = predictLabels.Select(id => IdToLabel[id.ToString()]);
         var result = predictedLabels?.Zip(tokens, (label, token) =>
         {
+            var decodedText = tokenizer.Decode(new[] { token });
+            Console.WriteLine($"Token: {token}, Decoded Text: {decodedText}, Label: {label}");
+
             return new EntityResult
             {
                 Text = tokenizer.Decode([0, token])[5..],

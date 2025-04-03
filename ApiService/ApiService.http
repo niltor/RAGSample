@@ -7,3 +7,11 @@ Content-Type: application/json
 {
     "Content": "创建一个ASP.NET Core API项目"
 }
+
+###
+POST  {{ApiService_HostAddress}}/ai/ner
+{
+  "text":"借助.Net Aspire快速运行大语言模型"
+}
+
+### 

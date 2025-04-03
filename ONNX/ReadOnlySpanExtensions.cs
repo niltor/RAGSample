@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 namespace ONNX;
 internal static class ReadOnlySpanExtensions
 {
+    /// <summary>
+    /// 从模型输出的概率分布中提取每个 chunk 中最大值的索引
+    /// </summary>
+    /// <param name="span"></param>
+    /// <param name="chunkSize"></param>
+    /// <returns></returns>
     public static List<int> GetMaxValueIndexForChunks(this ReadOnlySpan<float> span, int chunkSize)
     {
         if (chunkSize <= 0)

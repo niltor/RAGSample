@@ -1,6 +1,9 @@
 ﻿using ApiService.Models;
+using ApiService.Models.SLMDtos;
 using ApiService.Plugins;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 
@@ -10,37 +13,35 @@ namespace ApiService.Handlers;
 #pragma warning disable SKEXP0001
 public static class SLMHandler
 {
-    public static async Task<List<string>> NerAsync(string text, IChatCompletionService chat)
+    public static async Task<List<string>> NerAsync(NerRequestDto dto, IChatCompletionService chat)
     {
-
         string prompt = $$"""
-            {{text}}
+            {{dto.Text}}
 
-            请分析该句子，识别其中的内容，以便进行分类，并返回json格式内容。
+            请分析该句子，识别其中的内容，以便进行分类
 
-            要识别的类别为: 地点，技术名词，专有名词，其他名词
+            要识别的类别为: 技术名词，专有名词，摘要；识别的内容保持原语言表示
 
-            返回的json格式如下：
-            {
-                "技术名词":["",""],
-                "地名":["",""]，
-                "专有名词":["",""],
-                "其他名词":["",""]
+            返回的json格式如下：{
+                "TechNoun":["",""],
+                "ProperNoun":["",""]，
+                "Summary":""
             }
+
+            仅返回json本身内容作为最终结果，不需要任何格式化内容，不要添加解释。
             """;
 
         var response = await chat.GetChatMessageContentsAsync(prompt, new PromptExecutionSettings
         {
             ExtensionData = new Dictionary<string, object>
             {
-                { "max_token", 1000 }
+                { "max_token", 20 },
             },
 
         });
         var result = response.FirstOrDefault()?.Content;
 
         return [result];
-
     }
 
 

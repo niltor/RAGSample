@@ -1,6 +1,6 @@
 ﻿using Markdig;
 
-namespace ApiService.PredictionPrcessing;
+namespace ApiService.PredictionProcessing;
 
 /// <summary>
 /// markdown文档处理

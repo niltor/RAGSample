@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using ApiService.Models;
-using ApiService.PredictionPrcessing;
+using ApiService.PredictionProcessing;
 using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel.Embeddings;
 

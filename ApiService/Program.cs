@@ -2,6 +2,7 @@
 using ApiService.Handlers;
 using ApiService.Models;
 using ApiService.Plugins;
+using ApiService.PredictionProcessing;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 
@@ -36,6 +37,7 @@ builder.Services.AddTransient((serviceProvider) =>
     return kernel;
 });
 
+builder.Services.AddScoped<KnowledgeProcessing>();
 //builder.Services.AddHostedService<Worker>();
 var app = builder.Build();
 

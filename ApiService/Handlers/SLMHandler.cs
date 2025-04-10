@@ -1,6 +1,8 @@
 ﻿using ApiService.Models;
+using ApiService.Models.ProcessingDtos;
 using ApiService.Models.SLMDtos;
 using ApiService.Plugins;
+using ApiService.PredictionProcessing;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,35 +15,14 @@ namespace ApiService.Handlers;
 #pragma warning disable SKEXP0001
 public static class SLMHandler
 {
-    public static async Task<List<string>> NerAsync(NerRequestDto dto, IChatCompletionService chat)
+    public static async Task<NerResultDto?> NerAsync(TextRequestDto dto, KnowledgeProcessing processing)
     {
-        string prompt = $$"""
-            {{dto.Text}}
+        return await processing.NerAsync(dto.Text);
+    }
 
-            请分析该句子，识别其中的内容，以便进行分类
-
-            要识别的类别为: 技术名词，专有名词，摘要；识别的内容保持原语言表示
-
-            返回的json格式如下：{
-                "TechNoun":["",""],
-                "ProperNoun":["",""]，
-                "Summary":""
-            }
-
-            仅返回json本身内容作为最终结果，不需要任何格式化内容，不要添加解释。
-            """;
-
-        var response = await chat.GetChatMessageContentsAsync(prompt, new PromptExecutionSettings
-        {
-            ExtensionData = new Dictionary<string, object>
-            {
-                { "max_token", 20 },
-            },
-
-        });
-        var result = response.FirstOrDefault()?.Content;
-
-        return [result];
+    public static async Task<List<RelationDto>?> RelationExtractionAsync(TextRequestDto dto, KnowledgeProcessing processing)
+    {
+        return await processing.RelationExtractionAsync(dto.Text);
     }
 
 

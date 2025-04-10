@@ -4,8 +4,6 @@ namespace ApiService;
 
 public static class RouteConfig
 {
-    // 添加services
-
     public static void MapEndpoints(this WebApplication app)
     {
         MapTestEndpoints(app);
@@ -26,6 +24,7 @@ public static class RouteConfig
         var group = app.MapGroup("ai");
         group.MapPost("/search", SLMHandler.SearchAsync);
         group.MapPost("/ner", SLMHandler.NerAsync);
+        group.MapPost("/relation", SLMHandler.RelationExtractionAsync);
     }
 
 }

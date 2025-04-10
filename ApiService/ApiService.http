@@ -17,3 +17,10 @@ Content-Type: application/json
 }
 
 ### 
+
+POST  {{ApiService_HostAddress}}/ai/relation
+Accept: application/json
+Content-Type: application/json
+{
+  "text":"作为.NET开发者，应该都十分熟悉LINQ，它在语言上极大简化并提升了开发体验。在微服务开发的背景下，微软推出了.NET Aspire，它为开发者提供了使用C#来表达和创作服务编排的能力，这样在开发中我们可以使用本地的docker来运行多个服务，发布时，可以发布到你使用的云服务(Azure,AWS,Docker compose,Kubernetes)，而不需要编写特定于生产环境的配置文件。在AI和大语言模型日益强大和易获得的情况下，越来越多的开发者希望能够在本地体验和测试大语言模型，而不是每次都需要调用云服务。今天我们将介绍如何使用.Net Aspire 仅使用几行代码在本地运行大语言模型。"
+}

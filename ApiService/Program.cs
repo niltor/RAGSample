@@ -2,7 +2,7 @@
 using ApiService.Handlers;
 using ApiService.Models;
 using ApiService.Plugins;
-using ApiService.PredictionProcessing;
+using ApiService.Processing;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 

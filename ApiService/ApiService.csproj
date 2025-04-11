@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.42.0-alpha" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.Qdrant" Version="1.42.0-preview" />
         <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.44.0" />
+        <PackageReference Include="QuikGraph" Version="2.5.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
         <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.0-preview.2.25163.2" />
     </ItemGroup>

@@ -2,7 +2,7 @@
 using ApiService.Models.ProcessingDtos;
 using ApiService.Models.SLMDtos;
 using ApiService.Plugins;
-using ApiService.PredictionProcessing;
+using ApiService.Processing;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

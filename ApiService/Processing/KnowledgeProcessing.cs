@@ -3,7 +3,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using System.Text.Json;
 
-namespace ApiService.PredictionProcessing;
+namespace ApiService.Processing;
 
 /// <summary>
 /// 实体识别

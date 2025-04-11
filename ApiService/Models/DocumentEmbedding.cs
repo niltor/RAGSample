@@ -7,10 +7,10 @@ public class DocumentEmbedding
     public static string DocName = "dusi";
 
     [VectorStoreRecordKey]
-    public ulong Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     [VectorStoreRecordData]
-    public string Sha { get; set; } = string.Empty;
+    public string Hash { get; set; } = string.Empty;
 
     [VectorStoreRecordData]
     public string Content { get; set; } = string.Empty;

@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace ApiService.Processing;
 
 /// <summary>
-/// 实体识别
+/// 知识内容处理
 /// </summary>
 public class KnowledgeProcessing
 {

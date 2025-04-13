@@ -36,6 +36,14 @@ public class MarkdownProcessing
         {
             content = content[3..^3];
         }
+        else if (content.StartsWith(prefix))
+        {
+            content = content[prefix.Length..];
+        }
+        else if (content.EndsWith("```"))
+        {
+            content = content[..^3];
+        }
         return content;
     }
 }

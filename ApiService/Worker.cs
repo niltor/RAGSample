@@ -56,6 +56,10 @@ public class Worker(
             _logger.LogError("dataPath is null");
             return;
         }
+        if (!Directory.Exists(dataPath))
+        {
+            Directory.CreateDirectory(dataPath);
+        }
 
         var dataFilePath = Path.Combine(dataPath, "knowledge.json");
         var knowledgeGraph = new KnowledgeGraphDto();
@@ -142,7 +146,6 @@ public class Worker(
     /// <returns></returns>
     private async Task GraphKnowledgeAsync(string content, KnowledgeGraphDto knowledgeGraph)
     {
-
         var paragraph = MarkdownProcessing.SplitText(content);
         using (var scope = serviceProvider.CreateScope())
         {
@@ -164,6 +167,7 @@ public class Worker(
                 var relation = await processing.RelationExtractionAsync(text);
                 if (relation != null)
                 {
+                    relation = [.. relation.Where(r => !string.IsNullOrWhiteSpace(r.Subject))];
                     relationList.AddRange(relation);
                     knowledgeGraph.HashSet.Add(hash);
                 }

@@ -1,11 +1,11 @@
 ﻿@ApiService_HostAddress = http://localhost:5278
 
 ###
-POST {{ApiService_HostAddress}}/search
+POST {{ApiService_HostAddress}}/ai/search
 Accept: application/json
 Content-Type: application/json
 {
-    "Content": "创建一个ASP.NET Core API项目"
+    "Content": "dry命令如何创建dto"
 }
 
 ###

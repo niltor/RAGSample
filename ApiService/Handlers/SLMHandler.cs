@@ -1,12 +1,8 @@
 ﻿using ApiService.Models;
 using ApiService.Models.ProcessingDtos;
 using ApiService.Models.SLMDtos;
-using ApiService.Plugins;
 using ApiService.Processing;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
+using ApiService.Services;
 using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace ApiService.Handlers;
@@ -32,25 +28,32 @@ public static class SLMHandler
     /// <param name="httpContext"></param>
     /// <param name="question"></param>
     /// <param name="chat"></param>
-    /// <param name="plugin"></param>
+    /// <param name="search"></param>
     /// <returns></returns>
     public static async Task SearchAsync(
         HttpContext httpContext,
         QuestionModel question,
         IChatCompletionService chat,
-        InternalDocumentsPlugin plugin
+        SearchService search
     )
     {
-
         httpContext.Response.ContentType = "text/plain;charset=utf-8";
-        var searchResult = await plugin.SearchAsync(question.Content);
-        Console.WriteLine($"🤟 {searchResult}");
+        var searchResults = await search.SearchAsync(question.Content);
+        string searchContent = string.Empty;
+
+        if (searchResults.Count > 0)
+        {
+            foreach (var item in searchResults)
+            {
+                searchContent += item + Environment.NewLine;
+            }
+        }
+
         string systemPrompt = $@"
 以下是从本地文档中搜索到的相关内容：
-{searchResult}
+{searchContent}
 
-请根据上述内容来回答用户的问题。如果文档中信息不足，请说明缺失的部分。
-
+请根据上述内容来回答用户的问题。如果没有找到相关内容，请回答没有找到相关信息。
 ";
 
         ChatHistory history = [];
@@ -58,15 +61,11 @@ public static class SLMHandler
         history.AddSystemMessage(systemPrompt);
 
         var response = await chat.GetChatMessageContentsAsync(history);
-
         foreach (var item in response)
         {
             Console.WriteLine(item.Content);
             await httpContext.Response.WriteAsync(item.Content ?? "");
         }
-
         await httpContext.Response.CompleteAsync();
     }
-
-
 }

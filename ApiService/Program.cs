@@ -1,27 +1,25 @@
 ﻿using ApiService;
-using ApiService.Handlers;
-using ApiService.Models;
 using ApiService.Plugins;
 using ApiService.Processing;
+using ApiService.Services;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-string qdrantKey = "U3gr80UJhy880CkFnxfh1f";
 
 builder.Services.AddLogging(op =>
 {
     op.AddSimpleConsole();
 });
 
-// Add services to the container.
 
-#pragma warning disable SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+string? qdrantKey = builder.Configuration["Secret:QdrantKey"];
+#pragma warning disable SKEXP0070
 builder.Services
-    .AddOllamaChatCompletion("phi4-mini", new Uri("http://localhost:49394"))
+    .AddOllamaChatCompletion("phi4-mini", new HttpClient
+    {
+        BaseAddress = new Uri("http://localhost:49394"),
+        Timeout = TimeSpan.FromSeconds(120)
+    })
     .AddOllamaTextEmbeddingGeneration("nomic-embed-text", new Uri("http://localhost:49394"))
     .AddQdrantVectorStore("localhost", 49383, apiKey: qdrantKey);
 
@@ -38,7 +36,8 @@ builder.Services.AddTransient((serviceProvider) =>
 });
 
 builder.Services.AddScoped<KnowledgeProcessing>();
-//builder.Services.AddHostedService<Worker>();
+builder.Services.AddScoped<SearchService>();
+builder.Services.AddHostedService<Worker>();
 var app = builder.Build();
 
 

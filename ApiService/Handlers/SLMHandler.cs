@@ -53,7 +53,7 @@ public static class SLMHandler
 以下是从本地文档中搜索到的相关内容：
 {searchContent}
 
-请根据上述内容来回答用户的问题。如果没有找到相关内容，请回答没有找到相关信息。
+仅根据上述搜索结果来回答用户的问题。如果没有足够的内容来回答，则提示没有找到相关信息。
 ";
 
         ChatHistory history = [];

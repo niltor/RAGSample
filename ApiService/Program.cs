@@ -40,11 +40,5 @@ builder.Services.AddScoped<SearchService>();
 builder.Services.AddHostedService<Worker>();
 var app = builder.Build();
 
-
-app.MapGet("/ttt", () =>
-{
-    return "Hello World!";
-});
 app.MapEndpoints();
-
 app.Run();

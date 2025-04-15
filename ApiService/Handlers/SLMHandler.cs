@@ -41,7 +41,7 @@ public static class SLMHandler
         var searchResults = await search.SearchAsync(question.Content);
         string searchContent = string.Empty;
 
-        if (searchResults.Count > 0)
+        if (searchResults?.Count > 0)
         {
             foreach (var item in searchResults)
             {
@@ -63,7 +63,6 @@ public static class SLMHandler
         var response = await chat.GetChatMessageContentsAsync(history);
         foreach (var item in response)
         {
-            Console.WriteLine(item.Content);
             await httpContext.Response.WriteAsync(item.Content ?? "");
         }
         await httpContext.Response.CompleteAsync();

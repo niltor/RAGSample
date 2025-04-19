@@ -1,4 +1,4 @@
-﻿var builder = DistributedApplication.CreateBuilder(args);
+var builder = DistributedApplication.CreateBuilder(args);
 var ollama = builder.AddOllama("ollama", port: 49394)
     .WithGPUSupport()
     .WithContainerRuntimeArgs("--gpus=all")

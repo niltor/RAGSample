@@ -1,4 +1,4 @@
-﻿using ApiService.Handlers;
+using ApiService.Handlers;
 
 namespace ApiService;
 

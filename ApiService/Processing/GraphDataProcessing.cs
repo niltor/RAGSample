@@ -1,4 +1,4 @@
-﻿using ApiService.Models.ProcessingDtos;
+using ApiService.Models.ProcessingDtos;
 using QuikGraph;
 
 namespace ApiService.Processing;
